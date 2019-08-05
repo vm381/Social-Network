@@ -1,0 +1,35 @@
+fieldset{
+	background-color:#CCC;	
+	border:2px solid green;
+    -moz-border-radius:8px;
+    -webkit-border-radius:8px;	
+    border-radius:8px;	
+}
+body {
+  background-color: #0074D9;
+}
+input[type=text], select {
+  width: 80%;
+  padding: 8px 16px;
+  margin: 4px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+input[type=submit] {
+  width: 25%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.posts{
+	 border: 3px solid #73AD21;
+}

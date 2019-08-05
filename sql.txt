@@ -1,0 +1,346 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+-- -----------------------------------------------------
+-- Schema phpmyadmin
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema phpmyadmin
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `phpmyadmin` DEFAULT CHARACTER SET utf8 ;
+USE `phpmyadmin` ;
+
+-- -----------------------------------------------------
+-- Table `phpmyadmin`.`User`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `phpmyadmin`.`User` (
+  `username` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(45) NOT NULL,
+  `first_name` VARCHAR(45) NOT NULL,
+  `last_name` VARCHAR(45) NOT NULL,
+  `birthday` DATE NULL,
+  `gender` VARCHAR(1) NOT NULL,
+  `school` VARCHAR(100) NULL,
+  `city` VARCHAR(45) NULL,
+  PRIMARY KEY (`username`),
+  UNIQUE INDEX `idUser_UNIQUE` (`username` ASC))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `phpmyadmin`.`Category`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `phpmyadmin`.`Category` (
+  `idCategory` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idCategory`),
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC),
+  UNIQUE INDEX `idCategory_UNIQUE` (`idCategory` ASC))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `phpmyadmin`.`Group`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `phpmyadmin`.`Group` (
+  `idGroup` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `Category_idCategory` INT NOT NULL,
+  `dateFounded` DATE NOT NULL,
+  `description` VARCHAR(255) NULL,
+  `picture` VARCHAR(255) NULL,
+  PRIMARY KEY (`idGroup`),
+  UNIQUE INDEX `idGroup_UNIQUE` (`idGroup` ASC),
+  INDEX `fk_Group_Category1_idx` (`Category_idCategory` ASC),
+  CONSTRAINT `fk_Group_Category1`
+    FOREIGN KEY (`Category_idCategory`)
+    REFERENCES `phpmyadmin`.`Category` (`idCategory`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `phpmyadmin`.`Discusion`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `phpmyadmin`.`Discusion` (
+  `idDiscusion` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(45) NULL,
+  `Group_idGroup` INT NOT NULL,
+  PRIMARY KEY (`idDiscusion`),
+  UNIQUE INDEX `idDiscusion_UNIQUE` (`idDiscusion` ASC),
+  INDEX `fk_Discusion_Group1_idx` (`Group_idGroup` ASC),
+  CONSTRAINT `fk_Discusion_Group1`
+    FOREIGN KEY (`Group_idGroup`)
+    REFERENCES `phpmyadmin`.`Group` (`idGroup`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `phpmyadmin`.`Page`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `phpmyadmin`.`Page` (
+  `idPage` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `Category_idCategory` INT NOT NULL,
+  `dateFounded` DATE NOT NULL,
+  `description` VARCHAR(255) NULL,
+  `picture` VARCHAR(255) NULL,
+  PRIMARY KEY (`idPage`),
+  UNIQUE INDEX `idPage_UNIQUE` (`idPage` ASC),
+  INDEX `fk_Page_Category1_idx` (`Category_idCategory` ASC),
+  CONSTRAINT `fk_Page_Category1`
+    FOREIGN KEY (`Category_idCategory`)
+    REFERENCES `phpmyadmin`.`Category` (`idCategory`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `phpmyadmin`.`Post`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `phpmyadmin`.`Post` (
+  `idPost` INT NOT NULL AUTO_INCREMENT,
+  `text` VARCHAR(255) NOT NULL,
+  `time` DATETIME NOT NULL,
+  `User_username` VARCHAR(45) NOT NULL,
+  `likes` INT NOT NULL DEFAULT 0,
+  `Discusion_idDiscusion` INT NULL,
+  `Page_idPage` INT NULL,
+  `Group_idGroup` INT NULL,
+  PRIMARY KEY (`idPost`),
+  UNIQUE INDEX `post_id_UNIQUE` (`idPost` ASC),
+  INDEX `fk_Post_User_idx` (`User_username` ASC),
+  INDEX `fk_Post_Discusion1_idx` (`Discusion_idDiscusion` ASC),
+  INDEX `fk_Post_Page1_idx` (`Page_idPage` ASC),
+  INDEX `fk_Post_Group1_idx` (`Group_idGroup` ASC),
+  CONSTRAINT `fk_Post_User`
+    FOREIGN KEY (`User_username`)
+    REFERENCES `phpmyadmin`.`User` (`username`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Post_Discusion1`
+    FOREIGN KEY (`Discusion_idDiscusion`)
+    REFERENCES `phpmyadmin`.`Discusion` (`idDiscusion`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Post_Page1`
+    FOREIGN KEY (`Page_idPage`)
+    REFERENCES `phpmyadmin`.`Page` (`idPage`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Post_Group1`
+    FOREIGN KEY (`Group_idGroup`)
+    REFERENCES `phpmyadmin`.`Group` (`idGroup`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `phpmyadmin`.`Message`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `phpmyadmin`.`Message` (
+  `idMessage` INT NOT NULL AUTO_INCREMENT,
+  `text` VARCHAR(255) NOT NULL,
+  `time` DATETIME NOT NULL,
+  `User_sender` VARCHAR(45) NOT NULL,
+  `User_receiver` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idMessage`),
+  UNIQUE INDEX `idMessage_UNIQUE` (`idMessage` ASC),
+  INDEX `fk_Message_User1_idx` (`User_sender` ASC),
+  INDEX `fk_Message_User2_idx` (`User_receiver` ASC),
+  CONSTRAINT `fk_Message_User1`
+    FOREIGN KEY (`User_sender`)
+    REFERENCES `phpmyadmin`.`User` (`username`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Message_User2`
+    FOREIGN KEY (`User_receiver`)
+    REFERENCES `phpmyadmin`.`User` (`username`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `phpmyadmin`.`Friends`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `phpmyadmin`.`Friends` (
+  `User_username` VARCHAR(45) NOT NULL,
+  `User_username1` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`User_username`, `User_username1`),
+  INDEX `fk_User_has_User_User2_idx` (`User_username1` ASC),
+  INDEX `fk_User_has_User_User1_idx` (`User_username` ASC),
+  CONSTRAINT `fk_User_has_User_User1`
+    FOREIGN KEY (`User_username`)
+    REFERENCES `phpmyadmin`.`User` (`username`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_User_has_User_User2`
+    FOREIGN KEY (`User_username1`)
+    REFERENCES `phpmyadmin`.`User` (`username`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `phpmyadmin`.`Poll`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `phpmyadmin`.`Poll` (
+  `idPoll` INT NOT NULL AUTO_INCREMENT,
+  `question` VARCHAR(100) NOT NULL,
+  `time` DATETIME NOT NULL,
+  `Page_idPage` INT NOT NULL,
+  PRIMARY KEY (`idPoll`),
+  UNIQUE INDEX `idPoll_UNIQUE` (`idPoll` ASC),
+  INDEX `fk_Poll_Page1_idx` (`Page_idPage` ASC),
+  CONSTRAINT `fk_Poll_Page1`
+    FOREIGN KEY (`Page_idPage`)
+    REFERENCES `phpmyadmin`.`Page` (`idPage`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `phpmyadmin`.`Answer`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `phpmyadmin`.`Answer` (
+  `idAnswer` INT NOT NULL AUTO_INCREMENT,
+  `text` VARCHAR(45) NOT NULL,
+  `Poll_idPoll` INT NOT NULL,
+  PRIMARY KEY (`idAnswer`),
+  UNIQUE INDEX `idAnswer_UNIQUE` (`idAnswer` ASC),
+  INDEX `fk_Answer_Poll1_idx` (`Poll_idPoll` ASC),
+  CONSTRAINT `fk_Answer_Poll1`
+    FOREIGN KEY (`Poll_idPoll`)
+    REFERENCES `phpmyadmin`.`Poll` (`idPoll`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `phpmyadmin`.`Event`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `phpmyadmin`.`Event` (
+  `idEvent` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `date` DATETIME NOT NULL,
+  `Category_idCategory` INT NOT NULL,
+  PRIMARY KEY (`idEvent`, `Category_idCategory`),
+  UNIQUE INDEX `idEvent_UNIQUE` (`idEvent` ASC),
+  INDEX `fk_Event_Category1_idx` (`Category_idCategory` ASC),
+  CONSTRAINT `fk_Event_Category1`
+    FOREIGN KEY (`Category_idCategory`)
+    REFERENCES `phpmyadmin`.`Category` (`idCategory`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `phpmyadmin`.`User_Page`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `phpmyadmin`.`User_Page` (
+  `User_username` VARCHAR(45) NOT NULL,
+  `Page_idPage` INT NOT NULL,
+  `admin` TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`User_username`, `Page_idPage`),
+  INDEX `fk_User_has_Page_Page1_idx` (`Page_idPage` ASC),
+  INDEX `fk_User_has_Page_User1_idx` (`User_username` ASC),
+  CONSTRAINT `fk_User_has_Page_User1`
+    FOREIGN KEY (`User_username`)
+    REFERENCES `phpmyadmin`.`User` (`username`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_User_has_Page_Page1`
+    FOREIGN KEY (`Page_idPage`)
+    REFERENCES `phpmyadmin`.`Page` (`idPage`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `phpmyadmin`.`User_Group`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `phpmyadmin`.`User_Group` (
+  `User_username` VARCHAR(45) NOT NULL,
+  `Group_idGroup` INT NOT NULL,
+  `admin` TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`User_username`, `Group_idGroup`),
+  INDEX `fk_User_has_Group_Group1_idx` (`Group_idGroup` ASC),
+  INDEX `fk_User_has_Group_User1_idx` (`User_username` ASC),
+  CONSTRAINT `fk_User_has_Group_User1`
+    FOREIGN KEY (`User_username`)
+    REFERENCES `phpmyadmin`.`User` (`username`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_User_has_Group_Group1`
+    FOREIGN KEY (`Group_idGroup`)
+    REFERENCES `phpmyadmin`.`Group` (`idGroup`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `phpmyadmin`.`User_Event`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `phpmyadmin`.`User_Event` (
+  `User_username` VARCHAR(45) NOT NULL,
+  `Event_idEvent` INT NOT NULL,
+  `Event_Category_idCategory` INT NOT NULL,
+  `host` TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`User_username`, `Event_idEvent`, `Event_Category_idCategory`),
+  INDEX `fk_User_has_Event_Event1_idx` (`Event_idEvent` ASC, `Event_Category_idCategory` ASC),
+  INDEX `fk_User_has_Event_User1_idx` (`User_username` ASC),
+  CONSTRAINT `fk_User_has_Event_User1`
+    FOREIGN KEY (`User_username`)
+    REFERENCES `phpmyadmin`.`User` (`username`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_User_has_Event_Event1`
+    FOREIGN KEY (`Event_idEvent` , `Event_Category_idCategory`)
+    REFERENCES `phpmyadmin`.`Event` (`idEvent` , `Category_idCategory`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `phpmyadmin`.`User_likes_Category`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `phpmyadmin`.`User_likes_Category` (
+  `User_username` VARCHAR(45) NOT NULL,
+  `Category_idCategory` INT NOT NULL,
+  PRIMARY KEY (`User_username`, `Category_idCategory`),
+  INDEX `fk_User_has_Category_Category1_idx` (`Category_idCategory` ASC),
+  INDEX `fk_User_has_Category_User1_idx` (`User_username` ASC),
+  CONSTRAINT `fk_User_has_Category_User1`
+    FOREIGN KEY (`User_username`)
+    REFERENCES `phpmyadmin`.`User` (`username`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_User_has_Category_Category1`
+    FOREIGN KEY (`Category_idCategory`)
+    REFERENCES `phpmyadmin`.`Category` (`idCategory`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+

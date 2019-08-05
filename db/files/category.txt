@@ -1,0 +1,47 @@
+1
+Kategorije:{
+film=;
+muzika=Avici;
+sport=Barcelona,PSG,Liverpool;
+zivotinja=;
+knjige=;
+video=;
+dogadjaj=;
+tvprogram=Friends,two and half;
+appigre=;
+lajk=;
+slika=;
+priatelj=1,2,3;
+pregled=;}
+
+2
+Kategorije:{
+film=Comedy,
+muzika=Taylor Swift;
+sport=;
+zivotinja=Cats;
+knjige=;
+video=;
+dogadjaj=Exit 2018;
+tvprogram=;
+appigre=;
+lajk=;
+slika=;
+priatelj=1,2,3;
+pregled=;}
+
+3
+Kategorije:{
+film=;
+muzika=;
+sport=Fudbal,Ronaldo;
+zivotinja=;
+knjige=;
+video=Top10goals;
+dogadjaj=;
+tvprogram=;
+appigre=FIFA;
+lajk=;
+slika=;
+priatelj=1,2,3;
+pregled=;}
